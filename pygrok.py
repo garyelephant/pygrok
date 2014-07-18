@@ -95,7 +95,7 @@ def _reload_patterns(patterns_dir):
     global predefined_patterns
     predefined_patterns = {}
     for f in os.listdir(patterns_dir):
-        patterns = _load_patterns_from_file(f)
+        patterns = _load_patterns_from_file(os.path.join(patterns_dir, f))
         predefined_patterns.update(patterns)
 
     global loaded_pre_patterns
@@ -108,17 +108,15 @@ def _load_patterns_from_file(file):
     patterns = {}
     with open(file, 'r') as f:
         for l in f:
+            l = l.strip()
+            if l == '' or l.startswith('#'):
+                continue
+
             pat_regex = l.split()
             pat = Pattern(pat_regex[0], pat_regex[1])
             pat.sub_patterns = re.findall(_wrap_pattern_name(pat.pattern_name), pat.regex_str)
             patterns[pat.pattern_name] = pat
     return patterns
-
-
-def _extract_pattern_names(regex_str):
-    """
-    """
-    re.findall(, regex_str)
 
 
 def _build_pattern_regex(pattern_name, regex_map):
@@ -159,4 +157,7 @@ class Pattern(object):
         self.pattern_name = pattern_name
         self.regex_str = regex_str
         self.sub_patterns = sub_patterns # sub_pattern name list
+
+    def __str__(self):
+        return '<Pattern:%s,  %s,  %s>' % (self.pattern_name, self.regex_str, self.sub_patterns)
 
