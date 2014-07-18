@@ -144,8 +144,7 @@ def _replace_sub_pattern_regex(regex_str, sub_pattern_name, sub_pattern_regex_st
     """
     replace sub pattern name with sub pattern regex
     """
-    sub_pat_str = '%{' + sub_pattern_name + '}'
-    return regex_str.replace(sub_pat_str, sub_pattern_regex_str)
+    return regex_str.replace(_wrap_pattern_name(sub_pattern_name), sub_pattern_regex_str)
 
 
 class Pattern(object):
