@@ -112,8 +112,10 @@ def _load_patterns_from_file(file):
             if l == '' or l.startswith('#'):
                 continue
 
-            pat_regex = l.split()
-            pat = Pattern(pat_regex[0], pat_regex[1])
+            sep = l.find(' ')
+            pat_name = l[:sep]
+            regex_str = l[sep:].strip()
+            pat = Pattern(pat_name, regex_str)
             pat.sub_patterns = re.findall(_wrap_pattern_name(pat.pattern_name), pat.regex_str)
             patterns[pat.pattern_name] = pat
     return patterns
