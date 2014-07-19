@@ -29,9 +29,15 @@ def grok_match(text, pattern, patterns_dir = DEFAULT_PATTERNS_DIR):
         _reload_patterns(patterns_dir)
 
     #attention: this may cause performance problems
+    py_regex_pattern = pattern
     while True:
+        #replace %{pattern_name:custom_name} with regex and regex group name
         py_regex_pattern = re.sub(r'%{(\w+):(\w+)}',
-            lambda m: "(?P<" + m.group(2) + ">" + predefined_patterns[m.group(1)].regex_str + ")", pattern)
+            lambda m: "(?P<" + m.group(2) + ">" + predefined_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
+        #replace %{pattern_name} with regex1
+        py_regex_pattern = re.sub(r'%{(\w+)}',
+            lambda m: "(" + predefined_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
+
         if re.search('%{\w+}', py_regex_pattern) is None:
             break
 
