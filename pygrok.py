@@ -26,7 +26,8 @@ class PatternNotFound(GrokError):
 
 
 def grok_match(text, pattern, custom_patterns = {}, patterns_dir = DEFAULT_PATTERNS_DIR):
-    """
+    """If text is matched with pattern, return variable names specified(%{pattern:variable name}) 
+    in pattern and their corresponding values.If not matched, return None
     """
     if loaded_pre_patterns is False:
         _reload_patterns(patterns_dir)
@@ -44,7 +45,8 @@ def grok_match(text, pattern, custom_patterns = {}, patterns_dir = DEFAULT_PATTE
         if re.search('%{\w+}', py_regex_pattern) is None:
             break
 
-    return re.search(py_regex_pattern, text).groupdict()
+    match_obj = re.search(py_regex_pattern, text)
+    return match_obj.groupdict() if match_obj is not None else None
 
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'
