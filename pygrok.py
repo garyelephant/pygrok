@@ -22,7 +22,7 @@ class PatternNotFound(GrokError):
     pass
 
 
-def grok_match(text, pattern, patterns_dir = DEFAULT_PATTERNS_DIR):
+def grok_match(text, pattern, custom_patterns = {}, patterns_dir = DEFAULT_PATTERNS_DIR):
     """
     """
     if loaded_pre_patterns is False:
