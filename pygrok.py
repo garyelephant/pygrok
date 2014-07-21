@@ -1,4 +1,7 @@
-import re
+try:
+    import regex as re
+except ImportError as e:
+    import re
 import os
 
 PATTERN_SUFFIX = '.patt'
@@ -34,7 +37,7 @@ def grok_match(text, pattern, custom_patterns = {}, patterns_dir = DEFAULT_PATTE
         #replace %{pattern_name:custom_name} with regex and regex group name
         py_regex_pattern = re.sub(r'%{(\w+):(\w+)}',
             lambda m: "(?P<" + m.group(2) + ">" + predefined_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
-        #replace %{pattern_name} with regex1
+        #replace %{pattern_name} with regex
         py_regex_pattern = re.sub(r'%{(\w+)}',
             lambda m: "(" + predefined_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
 
@@ -122,7 +125,7 @@ def _load_patterns_from_file(file):
             pat_name = l[:sep]
             regex_str = l[sep:].strip()
             pat = Pattern(pat_name, regex_str)
-            pat.sub_patterns = re.findall(_wrap_pattern_name(pat.pattern_name), pat.regex_str)
+            #TODO temp commented pat.sub_patterns = re.findall(_wrap_pattern_name(pat.pattern_name), pat.regex_str)
             patterns[pat.pattern_name] = pat
     return patterns
 
