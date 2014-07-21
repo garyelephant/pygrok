@@ -2,7 +2,7 @@ import re
 import os
 
 PATTERN_SUFFIX = '.patt'
-DEFAULT_PATTERNS_DIR = './patterns'
+DEFAULT_PATTERNS_DIR = os.path.dirname(os.path.abspath(__file__)) + '/patterns'
 
 predefined_patterns = {}
 loaded_pre_patterns = False
