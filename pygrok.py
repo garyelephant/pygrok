@@ -1,10 +1,10 @@
 try:
     import regex as re
 except ImportError as e:
+    # If you import re, grok_match can't handle regular expression containing atomic group(?>)
     import re
 import os
 
-PATTERN_SUFFIX = '.patt'
 DEFAULT_PATTERNS_DIR = os.path.dirname(os.path.abspath(__file__)) + '/patterns'
 
 predefined_patterns = {}
@@ -45,55 +45,6 @@ def _wrap_pattern_name(pat_name):
 
 def _reload_patterns(patterns_dir):
     """
-    BASE10NUM (?<![0-9.+-])(?>[+-]?(?:(?:[0-9]+(?:\.[0-9]+)?)|(?:\.[0-9]+)))
-    NUMBER (?:%{BASE10NUM})
-
-         BASE10NUM
-           /
-          /
-       NUMBER
-    
-    PATH (?:%{UNIXPATH}|%{WINPATH})
-    UNIXPATH (?>/(?>[\w_%!$@:.,-]+|\\.)*)+
-    TTY (?:/dev/(pts|tty([pq])?)(\w+)?/?(?:[0-9]+))
-    WINPATH (?>[A-Za-z]+:|\\)(?:\\[^\\?*]*)+
-    URIPROTO [A-Za-z]+(\+[A-Za-z+]+)?
-    URIHOST %{IPORHOST}(?::%{POSINT:port})?
-    URIPATH (?:/[A-Za-z0-9$.+!*'(){},~:;=@#%_\-]*)+
-    URIPARAM \?[A-Za-z0-9$.+!*'|(){},~@#%&/=:;_?\-\[\]]*
-    URIPATHPARAM %{URIPATH}(?:%{URIPARAM})?
-    URI %{URIPROTO}://(?:%{USER}(?::[^@]*)?@)?(?:%{URIHOST})?(?:%{URIPATHPARAM})?
-
-    UNIXPATH   WINPATH
-       \          /
-        \        /
-         \      /
-          \    /
-           PATH
-                                      IPV6    IPV4
-                                        \     /
-                                         \   /
-                                          \ /
-                              HOSTNAME    IP
-                                  \       /
-                                   \     /
-                                    \   /
-             USERNAME              IPORHOST  POSINT
-               \                       \      /
-                \                       \    / 
-                 \                       \  /
-                USER      URIPROTO      URIHOST        URIPATH     URIPARAM
-                  \          \             \              \          /
-                   \          \             \              \        /
-                    \          \             \              \      /
-                     \          \             \           URIPATHPARAM
-                      \          \             \              /
-                       \          \             \            /
-                        \          \             \          /
-                         \----------\------------/---------/
-                                         \/
-                                       URI
-    
     """
     global predefined_patterns
     predefined_patterns = {}
