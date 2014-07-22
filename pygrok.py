@@ -17,10 +17,10 @@ class PatternNotFound(GrokError):
     pass
 
 
-def grok_match(text, pattern, custom_patterns = {}, patterns_dir = None):
+def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
     """If text is matched with pattern, return variable names specified(%{pattern:variable name}) 
     in pattern and their corresponding values.If not matched, return None.
-    User defined patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)or patterns_dir
+    custom patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)or patterns_dir.
     """
     patterns_dirs = [DEFAULT_PATTERNS_DIR]
     if patterns_dir is not None:
