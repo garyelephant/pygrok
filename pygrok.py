@@ -17,12 +17,16 @@ class PatternNotFound(GrokError):
     pass
 
 
-def grok_match(text, pattern, custom_patterns = {}, patterns_dir = DEFAULT_PATTERNS_DIR):
+def grok_match(text, pattern, custom_patterns = {}, patterns_dir = None):
     """If text is matched with pattern, return variable names specified(%{pattern:variable name}) 
-    in pattern and their corresponding values.If not matched, return None
+    in pattern and their corresponding values.If not matched, return None.
+    User defined patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)or patterns_dir
     """
+    patterns_dirs = [DEFAULT_PATTERNS_DIR]
+    if patterns_dir is not None:
+        patterns_dirs.append(patterns_dir)
     if loaded_pre_patterns is False:
-        _reload_patterns(patterns_dir)
+        _reload_patterns(patterns_dirs)
 
     #attention: this may cause performance problems
     py_regex_pattern = pattern
@@ -43,14 +47,15 @@ def grok_match(text, pattern, custom_patterns = {}, patterns_dir = DEFAULT_PATTE
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'
 
-def _reload_patterns(patterns_dir):
+def _reload_patterns(patterns_dirs):
     """
     """
     global predefined_patterns
     predefined_patterns = {}
-    for f in os.listdir(patterns_dir):
-        patterns = _load_patterns_from_file(os.path.join(patterns_dir, f))
-        predefined_patterns.update(patterns)
+    for dir in patterns_dirs:
+        for f in os.listdir(dir):
+            patterns = _load_patterns_from_file(os.path.join(dir, f))
+            predefined_patterns.update(patterns)
 
     global loaded_pre_patterns
     loaded_pre_patterns = True
