@@ -20,9 +20,10 @@ or from source:
 ```Bash
     $ sudo python setup.py install
 ```
-then download and install pygrok from source:
+then download, uncompress and install pygrok from source:
 
 ```Bash
+    $ tar zxvf pygrok-xx.tar.gz
     $ cd pygrok_dir
     $ sudo python setup.py install
 ```
