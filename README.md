@@ -1,4 +1,57 @@
 pygrok
 ======
+A Python library to parse strings and extract information from structured/unstructured data
 
-python implementation of jordansissel's grok regular expression library
+What can I use Grok for?
+------------------------
+* parsing and matching patterns in a string(log, message etc.)
+* relieving from complex regular expressions.
+* extracting information from structured/unstructured data
+
+Installation
+------------
+first, install regex, simply:
+
+```Bash
+    $ sudo pip regex
+```
+or from source:
+
+```Bash
+    $ sudo python setup.py install
+```
+then download and install pygrok from source:
+
+```Bash
+    $ cd pygrok_dir
+    $ sudo python setup.py install
+```
+
+Getting Started
+---------------
+```Python
+>>> import pygrok
+>>> text = 'gary is male, 25 years old and weighs 68.5 kilograms'
+>>> pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age} years old and weighs %{NUMBER:weight} kilograms'
+>>> print pygrok.grok_match(text, pattern)
+{'gender': 'male', 'age': '25', 'name': 'gary', 'weight': '68.5'}
+```
+
+More details
+------------
+Beause python re module does not support regular expression syntax atomic grouping(?>),so pygrok requires [regex](https://pypi.python.org/pypi/regex/2014.06.28) to be installed.
+
+pygrok is inspired by [Grok](https://github.com/jordansissel/grok) developed by Jordan Sissel.
+This is not a wrapper of Jordan Sissel's Grok and totally implemented by me.
+
+Grok is simple software that allows you to easily parse strings, logs and other files. With grok, you can turn unstructured log and event data into structured data.pygrok does the same thing.
+
+I recommend you to have a look at [logstash filter grok](http://logstash.net/docs/1.4.2/filters/grok), it explains how Grok-like thing work. 
+
+pattern files come from [logstash filter grok's pattern files](https://github.com/elasticsearch/logstash/tree/master/patterns)
+
+
+Get Help
+--------
+    mail:garygaowork@gmail.com
+    twitter:@garyelephant
