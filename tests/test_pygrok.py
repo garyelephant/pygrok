@@ -38,7 +38,7 @@ def test_one_pat():
     #you get nothing because variable name is not set, compare "%{WORD}" and "%{WORD:variable_name}"
 
     text = 'github'
-    pat = '%{NUMBER}'
+    pat = '%{NUMBER:test_num}'
     m = grok_match(text, pat)
     assert m is None, 'grok match failed:%s, %s' % (text, pat, )
     #not match
