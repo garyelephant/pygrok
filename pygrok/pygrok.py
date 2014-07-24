@@ -4,8 +4,9 @@ except ImportError as e:
     # If you import re, grok_match can't handle regular expression containing atomic group(?>)
     import re
 import os
+import copy
 
-DEFAULT_PATTERNS_DIR = os.path.dirname(os.path.abspath(__file__)) + '/patterns'
+DEFAULT_PATTERNS_DIRS = [os.path.dirname(os.path.abspath(__file__)) + '/patterns']
 
 predefined_patterns = {}
 loaded_pre_patterns = False
@@ -22,21 +23,33 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
     in pattern and their corresponding values.If not matched, return None.
     custom patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)or custom_patterns_dir.
     """
-    patterns_dirs = [DEFAULT_PATTERNS_DIR]
-    if custom_patterns_dir is not None:
-        patterns_dirs.append(custom_patterns_dir)
     if loaded_pre_patterns is False:
-        _reload_patterns(patterns_dirs, custom_patterns)
+       global predefined_patterns
+       predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
+       global loaded_pre_patterns
+       loaded_pre_patterns = True
+
+    all_patterns = copy.deepcopy(predefined_patterns)
+
+    custom_pats = {}
+    if custom_patterns_dir is not None:
+        custom_pats = _reload_patterns([custom_patterns_dir])
+
+    for pat_name, regex_str in custom_patterns.items():
+        custom_pats[pat_name] = Pattern(pat_name, regex_str)
+
+    if len(custom_pats) > 0:
+        all_patterns.update(custom_pats)
 
     #attention: this may cause performance problems
     py_regex_pattern = pattern
     while True:
         #replace %{pattern_name:custom_name} with regex and regex group name
         py_regex_pattern = re.sub(r'%{(\w+):(\w+)}',
-            lambda m: "(?P<" + m.group(2) + ">" + predefined_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
+            lambda m: "(?P<" + m.group(2) + ">" + all_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
         #replace %{pattern_name} with regex
         py_regex_pattern = re.sub(r'%{(\w+)}',
-            lambda m: "(" + predefined_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
+            lambda m: "(" + all_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
 
         if re.search('%{\w+}', py_regex_pattern) is None:
             break
@@ -47,24 +60,16 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'
 
-def _reload_patterns(patterns_dirs, custom_patterns):
+def _reload_patterns(patterns_dirs):
     """
     """
-    global predefined_patterns
-    predefined_patterns = {}
+    all_patterns = {}
     for dir in patterns_dirs:
         for f in os.listdir(dir):
             patterns = _load_patterns_from_file(os.path.join(dir, f))
-            predefined_patterns.update(patterns)
+            all_patterns.update(patterns)
 
-    patobjs = {}
-    for pat_name, regex_str in custom_patterns.items():
-        patobjs[pat_name] = Pattern(pat_name, regex_str)
-
-    predefined_patterns.update(patobjs)
-
-    global loaded_pre_patterns
-    loaded_pre_patterns = True
+    return all_patterns
 
 
 def _load_patterns_from_file(file):
