@@ -4,12 +4,12 @@ def test_one_pat():
     text = '1024'
     pat = '%{INT:test_int}'
     m = grok_match(text, pat)
-    assert m['test_int'] == 1024, 'grok match failed:%s, %s' % (text, pat, )
+    assert m['test_int'] == '1024', 'grok match failed:%s, %s' % (text, pat, )
     
     text = '1024'
     pat = '%{NUMBER:test_num}'
     m = grok_match(text, pat)
-    assert m['test_num'] == 1024, 'grok match failed:%s, %s' % (text, pat, )
+    assert m['test_num'] == '1024', 'grok match failed:%s, %s' % (text, pat, )
 
     text = 'garyelephant '
     pat = '%{WORD:name} '
@@ -26,7 +26,7 @@ def test_one_pat():
     m = grok_match(text, pat)
     assert m['website'] == text.strip(), 'grok match failed:%s, %s' % (text, pat, )
 
-    text = '1989-11-04 05:33:02 +0800'
+    text = '1989-11-04 05:33:02+0800'
     pat = '%{TIMESTAMP_ISO8601:ts}'
     m = grok_match(text, pat)
     assert m['ts'] == text.strip(), 'grok match failed:%s, %s' % (text, pat, )
@@ -48,7 +48,7 @@ def test_multiple_pats():
     text = 'gary 25 "never quit"'
     pat = '%{WORD:name} %{INT:age} %{QUOTEDSTRING:motto}'
     m = grok_match(text, pat)
-    assert m['name'] == 'gary' and m['age'] == '25' and m['motto'] == 'never quit', \
+    assert m['name'] == 'gary' and m['age'] == '25' and m['motto'] == '"never quit"', \
         'grok match failed:%s, %s' % (text, pat, )
 
     #variable names are not set
@@ -76,8 +76,8 @@ def test_multiple_pats():
         and m['delay'] == '6.032' and m['time_stamp'] == '21/Jul/2014:16:00:02 +0800' and m['verb'] == 'GET' \
         and m['uri_path'] == '/edge.v.iask.com/125880034.hlv' and m['http_ver'] == '1.0' \
         and m['http_status'] == '200' and m['bytes'] == '70528990' \
-        and m['client'] == 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)' \
-        + ' Chrome/36.0.1985.125 Safari/537.36', 'grok match failed:%s, %s' % (text, pat, )
+        and m['client'] == '"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)' \
+        + ' Chrome/36.0.1985.125 Safari/537.36"', 'grok match failed:%s, %s' % (text, pat, )
 
     
 def test_custom_pats():
@@ -86,7 +86,7 @@ def test_custom_pats():
     pat = '%{ID:user_id},%{WORD:name} %{INT:age} %{QUOTEDSTRING:motto}'
     m = grok_match(text, pat, custom_patterns = custom_pats)
     assert m['user_id'] == 'Beijing-1104' and m['name'] == 'gary' and m['age'] == '25' \
-        and m['motto'] == 'never quit', 'grok match failed:%s, %s' % (text, pat, )
+        and m['motto'] == '"never quit"', 'grok match failed:%s, %s' % (text, pat, )
 
 
 def test_custom_pat_files():
@@ -96,7 +96,7 @@ def test_custom_pat_files():
     pat = '%{ID:user_id},%{WORD:name} %{INT:age} %{QUOTEDSTRING:motto}'
     m = grok_match(text, pat, custom_patterns_dir = pats_dir)
     assert m['user_id'] == 'Beijing-1104' and m['name'] == 'gary' and m['age'] == '25' \
-        and m['motto'] == 'never quit', 'grok match failed:%s, %s' % (text, pat, )
+        and m['motto'] == '"never quit"', 'grok match failed:%s, %s' % (text, pat, )
 
 if __name__ == '__main__':
     test_one_pat()
