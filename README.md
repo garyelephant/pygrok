@@ -51,8 +51,10 @@ I recommend you to have a look at [logstash filter grok](http://logstash.net/doc
 
 pattern files come from [logstash filter grok's pattern files](https://github.com/elasticsearch/logstash/tree/master/patterns)
 
+I use Trello to manage [TODO list](https://trello.com/b/UUFSmFnz) of this project.
 
 Get Help
 --------
     mail:garygaowork@gmail.com
     twitter:@garyelephant
+    
