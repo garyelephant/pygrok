@@ -20,9 +20,10 @@ or from source:
 ```Bash
     $ sudo python setup.py install
 ```
-then download and install pygrok from source:
+then download, uncompress and install pygrok from source:
 
 ```Bash
+    $ tar zxvf pygrok-xx.tar.gz
     $ cd pygrok_dir
     $ sudo python setup.py install
 ```
@@ -44,14 +45,18 @@ Beause python re module does not support regular expression syntax atomic groupi
 pygrok is inspired by [Grok](https://github.com/jordansissel/grok) developed by Jordan Sissel.
 This is not a wrapper of Jordan Sissel's Grok and totally implemented by me.
 
-Grok is simple software that allows you to easily parse strings, logs and other files. With grok, you can turn unstructured log and event data into structured data.pygrok does the same thing.
+Grok is a simple software that allows you to easily parse strings, logs and other files. With grok, you can turn unstructured log and event data into structured data.pygrok does the same thing.
 
 I recommend you to have a look at [logstash filter grok](http://logstash.net/docs/1.4.2/filters/grok), it explains how Grok-like thing work. 
 
 pattern files come from [logstash filter grok's pattern files](https://github.com/elasticsearch/logstash/tree/master/patterns)
 
+TODO
+----
+I use Trello to manage [TODO list](https://trello.com/b/UUFSmFnz) of this project.
 
 Get Help
 --------
     mail:garygaowork@gmail.com
     twitter:@garyelephant
+    
