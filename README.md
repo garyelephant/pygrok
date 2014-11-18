@@ -48,7 +48,7 @@ Some of the pattern you can use are listed here:
 
 other patterns such as `IP`, `HOSTNAME`, `URIPATH`, `DATE`, `TIMESTAMP_ISO8601`, `COMMONAPACHELOG`..
 ```
-See All patterns [here](/master/pygrok/patterns)
+See All patterns [here](./pygrok/patterns)
 
 
 More details
