@@ -68,6 +68,11 @@ TODO
 ----
 I use Trello to manage [TODO list](https://trello.com/b/UUFSmFnz) of this project.
 
+Contribute
+---
+*   You are encouraged to [fork](https://github.com/garyelephant/pygrok/fork), improve the code, then make a pull request. 
+*   [Issue tracker](https://github.com/garyelephant/pygrok/issues)
+
 Get Help
 --------
     mail:garygaowork@gmail.com
