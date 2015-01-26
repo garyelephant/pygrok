@@ -13,7 +13,7 @@ Installation
 first, install regex, simply:
 
 ```Bash
-    $ pip regex
+    $ pip install regex
 ```
 or from source:
 
