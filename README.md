@@ -2,6 +2,7 @@ pygrok
 ======
 
 [![Join the chat at https://gitter.im/garyelephant/pygrok](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/garyelephant/pygrok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A Python library to parse strings and extract information from structured/unstructured data
 
 What can I use Grok for?
@@ -12,19 +13,7 @@ What can I use Grok for?
 
 Installation
 ------------
-first, install regex, simply:
 
-```Bash
-    $ pip install regex
-```
-or from source:
-
-download regex from https://pypi.python.org/pypi/regex, uncompress and install
-```Bash
-    $ python setup.py install
-```
-
-then
 ```Bash
     $ pip install pygrok
 ```

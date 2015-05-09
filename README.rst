@@ -1,8 +1,9 @@
 pygrok
 ======
 
-|Join the chat at https://gitter.im/garyelephant/pygrok| A Python
-library to parse strings and extract information from
+|Join the chat at https://gitter.im/garyelephant/pygrok|
+
+A Python library to parse strings and extract information from
 structured/unstructured data
 
 What can I use Grok for?
@@ -15,22 +16,11 @@ What can I use Grok for?
 Installation
 ------------
 
-first, install regex, simply:
-
 .. code:: Bash
 
-        $ pip install regex
+        $ pip install pygrok
 
-or from source:
-
-download regex from https://pypi.python.org/pypi/regex, uncompress and
-install
-
-.. code:: Bash
-
-        $ python setup.py install
-
-then download, uncompress and install pygrok from
+or download, uncompress and install pygrok from
 `here <https://github.com/garyelephant/pygrok/releases/latest>`__:
 
 .. code:: Bash
