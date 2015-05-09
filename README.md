@@ -23,7 +23,13 @@ download regex from https://pypi.python.org/pypi/regex, uncompress and install
 ```Bash
     $ python setup.py install
 ```
-then download, uncompress and install pygrok from [here](https://github.com/garyelephant/pygrok/releases/latest):
+
+then
+```Bash
+    $ pip install pygrok
+```
+
+or download, uncompress and install pygrok from [here](https://github.com/garyelephant/pygrok/releases/latest):
 
 ```Bash
     $ tar zxvf pygrok-xx.tar.gz
