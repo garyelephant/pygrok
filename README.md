@@ -67,7 +67,7 @@ I recommend you to have a look at [logstash filter grok](http://logstash.net/doc
 pattern files come from [logstash filter grok's pattern files](https://github.com/elasticsearch/logstash/tree/master/patterns)
 
 TODO
-----
+---
 I use Trello to manage [TODO list](https://trello.com/b/UUFSmFnz) of this project.
 
 Contribute
@@ -76,7 +76,13 @@ Contribute
 *   [Issue tracker](https://github.com/garyelephant/pygrok/issues)
 
 Get Help
---------
+---
     mail:garygaowork@gmail.com
     twitter:@garyelephant
+    
+Contributors
+---
+  garyelephant
+  whilgeek
+
 
