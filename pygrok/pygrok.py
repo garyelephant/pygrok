@@ -29,8 +29,6 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
        predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
        loaded_pre_patterns = True
 
-    all_patterns = copy.deepcopy(predefined_patterns)
-
     custom_pats = {}
     if custom_patterns_dir is not None:
         custom_pats = _reload_patterns([custom_patterns_dir])
@@ -39,7 +37,10 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
         custom_pats[pat_name] = Pattern(pat_name, regex_str)
 
     if len(custom_pats) > 0:
+        all_patterns = copy.deepcopy(predefined_patterns)
         all_patterns.update(custom_pats)
+    else:
+        all_patterns = predefined_patterns
 
     #attention: this may cause performance problems
     py_regex_pattern = pattern
