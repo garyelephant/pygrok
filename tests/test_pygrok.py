@@ -90,7 +90,8 @@ def test_custom_pats():
 
 
 def test_custom_pat_files():
-    pats_dir = './test_patterns'
+    import os.path
+    pats_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_patterns')
     text = 'Beijing-1104,gary 25 "never quit"'
     #pattern "ID" is defined in ./test_patterns/pats
     pat = '%{ID:user_id},%{WORD:name} %{INT:age} %{QUOTEDSTRING:motto}'
