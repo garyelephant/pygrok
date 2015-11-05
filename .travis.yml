@@ -1,0 +1,18 @@
+language: python
+python:
+- '2.6'
+- '2.7'
+- '3.2'
+- '3.3'
+- '3.4'
+- '3.5'
+- pypy
+deploy:
+  provider: pypi
+  user: garyelephant
+  # automatically deploy a new version of this package each time you add a new tag on master
+  on:
+    tags: true
+    branch: master
+  password:
+    secure: FTrWF35Rkog2UVN5tUz+I5cs1Sni9m8ctX+GGLWOjYoRzxgrzYb70AOyNAQCmI6ZD67gNyYQ3O8o2ukx2/YxxGfMaK6BKvGg7LXeLLafJKXstiM8Kb0dtBe+lNS4Ct0KYRXpGIqMz2Ak/Gviagx/S5jXgSOv66VzIzj9n1bDp2U=
