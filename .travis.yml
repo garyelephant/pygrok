@@ -19,4 +19,5 @@ deploy:
   password:
     secure: FTrWF35Rkog2UVN5tUz+I5cs1Sni9m8ctX+GGLWOjYoRzxgrzYb70AOyNAQCmI6ZD67gNyYQ3O8o2ukx2/YxxGfMaK6BKvGg7LXeLLafJKXstiM8Kb0dtBe+lNS4Ct0KYRXpGIqMz2Ak/Gviagx/S5jXgSOv66VzIzj9n1bDp2U=
 script:
+  python setup.py install
   python tests/test_pygrok.py
