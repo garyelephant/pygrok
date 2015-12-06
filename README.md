@@ -57,13 +57,9 @@ This is not a wrapper of Jordan Sissel's Grok and totally implemented by me.
 
 Grok is a simple software that allows you to easily parse strings, logs and other files. With grok, you can turn unstructured log and event data into structured data.Pygrok does the same thing.
 
-I recommend you to have a look at [logstash filter grok](http://logstash.net/docs/1.4.2/filters/grok), it explains how Grok-like thing work. 
+I recommend you to have a look at [logstash filter grok](https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html), it explains how Grok-like thing work.
 
-pattern files come from [logstash filter grok's pattern files](https://github.com/elasticsearch/logstash/tree/master/patterns)
-
-TODO
----
-I use Trello to manage [TODO list](https://trello.com/b/UUFSmFnz) of this project.
+pattern files come from [logstash filter grok's pattern files](https://github.com/logstash-plugins/logstash-patterns-core/tree/master/patterns)
 
 Contribute
 ---
@@ -77,7 +73,4 @@ Get Help
     
 Contributors
 ---
-  garyelephant
-  whilgeek
-
-
+  Thanks to [all contributors](https://github.com/garyelephant/pygrok/graphs/contributors)
