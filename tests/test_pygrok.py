@@ -68,7 +68,7 @@ def test_multiple_pats():
         + ' "GET /edge.v.iask.com/125880034.hlv HTTP/1.0" 200 70528990 "-"' \
         + ' "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)' \
         + ' Chrome/36.0.1985.125 Safari/537.36"'
-    pat = '%{HOST:host} %{IP:client_ip} %{NUMBER:delay}s - \[%{DATA:time_stamp}\]' \
+    pat = '%{HOSTNAME:host} %{IP:client_ip} %{NUMBER:delay}s - \[%{DATA:time_stamp}\]' \
         + ' "%{WORD:verb} %{URIPATHPARAM:uri_path} HTTP/%{NUMBER:http_ver}" %{INT:http_status} %{INT:bytes} %{QS}' \
         + ' %{QS:client}'
     m = grok_match(text, pat)
