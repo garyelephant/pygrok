@@ -22,7 +22,7 @@ def test_one_pat():
     assert m['ip'] == text.strip(), 'grok match failed:%s, %s' % (text, pat, )
 
     text = 'github.com'
-    pat = '%{HOST:website}'
+    pat = '%{HOSTNAME:website}'
     m = grok_match(text, pat)
     assert m['website'] == text.strip(), 'grok match failed:%s, %s' % (text, pat, )
 
