@@ -7,7 +7,7 @@ if os.path.exists('README.rst'):
     long_desc = open('README.rst').read()
 
 setup(name = 'pygrok',
-    version = '0.7.3',
+    version = '0.7.4',
     description = 'A Python library to parse strings and'
         + ' extract information from structured/unstructured data',
     long_description= long_desc,
@@ -18,6 +18,6 @@ setup(name = 'pygrok',
     packages = ['pygrok'],
     include_package_data = True,
     keywords = ['python grok', 'regex'], # arbitrary keywords
-    download_url = 'https://github.com/garyelephant/pygrok/tarball/v0.7.3',
+    download_url = 'https://github.com/garyelephant/pygrok/tarball/v0.7.4',
     install_requires=['regex']
     )
