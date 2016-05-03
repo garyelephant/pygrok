@@ -45,8 +45,8 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
     #attention: this may cause performance problems
     py_regex_pattern = pattern
     while True:
-        #replace %{pattern_name:custom_name} with regex and regex group name
-        py_regex_pattern = re.sub(r'%{(\w+):(\w+)}',
+        #replace %{pattern_name:custom_name} (or %{pattern_name:custom_name:type} with regex and regex group name
+        py_regex_pattern = re.sub(r'%{(\w+):(\w+)(?::\w+)?}',
             lambda m: "(?P<" + m.group(2) + ">" + all_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
         #replace %{pattern_name} with regex
         py_regex_pattern = re.sub(r'%{(\w+)}',
