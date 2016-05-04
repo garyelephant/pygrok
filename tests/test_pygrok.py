@@ -42,6 +42,11 @@ def test_one_pat():
     m = grok_match(text, pat)
     assert m is None, 'grok match failed:%s, %s' % (text, pat, )
     #not match
+    
+    text = '1989'
+    pat = '%{NUMBER:birthyear:int}'
+    m = grok_match(text, pat)
+    assert m == {'birthyear':'1989'}, 'grok match failed:%s, %s' % (text, pat, )
 
 
 def test_multiple_pats():
