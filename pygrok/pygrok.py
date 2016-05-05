@@ -62,7 +62,7 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
 
     match_obj = re.search(py_regex_pattern, text)
     if match_obj == None:
-	return None
+        return None
     matches = match_obj.groupdict()
     for key,match in matches.items():
         try:
