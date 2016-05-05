@@ -46,7 +46,7 @@ def test_one_pat():
     text = '1989'
     pat = '%{NUMBER:birthyear:int}'
     m = grok_match(text, pat)
-    assert m == {'birthyear':'1989'}, 'grok match failed:%s, %s' % (text, pat, )
+    assert m == {'birthyear': 1989}, 'grok match failed:%s, %s' % (text, pat, )
 
 
 def test_multiple_pats():
@@ -84,7 +84,16 @@ def test_multiple_pats():
         and m['client'] == '"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)' \
         + ' Chrome/36.0.1985.125 Safari/537.36"', 'grok match failed:%s, %s' % (text, pat, )
 
-    
+    text = '1989/02/23'
+    pat = '%{NUMBER:birthyear:int}/%{NUMBER:birthmonth:int}/%{NUMBER:birthday:int}'
+    m = grok_match(text, pat)
+    assert m == {'birthyear': 1989, 'birthmonth': 2, 'birthday': 23}, 'grok match failed:%s, %s' % (text, pat, )
+
+    text = 'load average: 1.88, 1.73, 1.49'
+    pat = 'load average: %{NUMBER:load_1:float}, %{NUMBER:load_2:float}, %{NUMBER:load_3:float}'
+    m = grok_match(text, pat)
+    assert m == {'load_1': 1.88, 'load_2': 1.73, 'load_3': 1.49}, 'grok match failed:%s, %s' % (text, pat, )
+
 def test_custom_pats():
     custom_pats = {'ID' : '%{WORD}-%{INT}'}
     text = 'Beijing-1104,gary 25 "never quit"'

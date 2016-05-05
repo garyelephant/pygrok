@@ -42,9 +42,14 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
     else:
         all_patterns = predefined_patterns
 
+    type_mapper = {}
     #attention: this may cause performance problems
     py_regex_pattern = pattern
     while True:
+        # Finding all types specified in the groks
+        m = re.findall(r'%{(\w+):(\w+):(\w+)}', py_regex_pattern)
+        for n in m:
+            type_mapper[n[1]] = n[2]
         #replace %{pattern_name:custom_name} (or %{pattern_name:custom_name:type} with regex and regex group name
         py_regex_pattern = re.sub(r'%{(\w+):(\w+)(?::\w+)?}',
             lambda m: "(?P<" + m.group(2) + ">" + all_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
@@ -56,7 +61,18 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
             break
 
     match_obj = re.search(py_regex_pattern, text)
-    return match_obj.groupdict() if match_obj is not None else None
+    if match_obj == None:
+	return None
+    matches = match_obj.groupdict()
+    for key,match in matches.items():
+        try:
+            if type_mapper[key] == 'int':
+                matches[key] = int(match)
+            if type_mapper[key] == 'float':
+                matches[key] = float(match)
+        except KeyError:
+            pass
+    return matches
 
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'
