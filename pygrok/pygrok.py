@@ -70,7 +70,7 @@ def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
                 matches[key] = int(match)
             if type_mapper[key] == 'float':
                 matches[key] = float(match)
-        except KeyError:
+        except (TypeError, KeyError) as e:
             pass
     return matches
 
