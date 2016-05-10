@@ -37,6 +37,17 @@ Getting Started
 ```
 
 Pretty Cool !
+
+Numbers can be converted from string to `int` or `float` if you use `%{pattern:name:type}` syntax, such as `%{NUMBER:age:int}`
+```Python
+>>> pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age:int} years old and weighs %{NUMBER:weight:float} kilograms'
+>>> print pygrok.grok_match(text, pattern)
+{'gender': 'male', 'age': 25, 'name': 'gary', 'weight': 68.5}
+```
+Now `age` is of type `int` and `weight` is of type `float`.
+
+Awesome !
+
 Some of the pattern you can use are listed here:
 ```
 `WORD` means \b\w+\b in regular expression.
@@ -46,6 +57,8 @@ Some of the pattern you can use are listed here:
 other patterns such as `IP`, `HOSTNAME`, `URIPATH`, `DATE`, `TIMESTAMP_ISO8601`, `COMMONAPACHELOG`..
 ```
 See All patterns [here](./pygrok/patterns)
+
+You can also have custom pattern, see [these codes](https://github.com/garyelephant/pygrok/blob/master/tests/test_pygrok.py#L97).
 
 
 More details
