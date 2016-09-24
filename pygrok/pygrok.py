@@ -4,75 +4,73 @@ except ImportError as e:
     # If you import re, grok_match can't handle regular expression containing atomic group(?>)
     import re
 import os
-import copy
 
 DEFAULT_PATTERNS_DIRS = [os.path.dirname(os.path.abspath(__file__)) + '/patterns']
 
-predefined_patterns = {}
-loaded_pre_patterns = False
 
+class Grok(object):
+    def __init__(self, pattern, custom_patterns_dir=None):
+        self.pattern = pattern
+        self.custom_patterns_dir = custom_patterns_dir
+        self.predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
 
-class GrokError(Exception):
-    pass
-class PatternNotFound(GrokError):
-    pass
+        custom_pats = {}
+        if custom_patterns_dir is not None:
+            custom_pats = _reload_patterns([custom_patterns_dir])
 
+        for pat_name, regex_str in custom_pats.items():
+            custom_pats[pat_name] = Pattern(pat_name, regex_str)
 
-def grok_match(text, pattern, custom_patterns = {}, custom_patterns_dir = None):
-    """If text is matched with pattern, return variable names specified(%{pattern:variable name}) 
-    in pattern and their corresponding values.If not matched, return None.
-    custom patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)or custom_patterns_dir.
-    """
-    global loaded_pre_patterns
-    if loaded_pre_patterns is False:
-       global predefined_patterns
-       predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
-       loaded_pre_patterns = True
+        if len(custom_pats) > 0:
+            self.predefined_patterns.update(custom_pats)
 
-    custom_pats = {}
-    if custom_patterns_dir is not None:
-        custom_pats = _reload_patterns([custom_patterns_dir])
+        self.type_mapper = {}
+        py_regex_pattern = pattern
+        while True:
+            # Finding all types specified in the groks
+            m = re.findall(r'%{(\w+):(\w+):(\w+)}', py_regex_pattern)
+            for n in m:
+                self.type_mapper[n[1]] = n[2]
+            #replace %{pattern_name:custom_name} (or %{pattern_name:custom_name:type}
+            # with regex and regex group name
 
-    for pat_name, regex_str in custom_patterns.items():
-        custom_pats[pat_name] = Pattern(pat_name, regex_str)
+            py_regex_pattern = re.sub(r'%{(\w+):(\w+)(?::\w+)?}',
+                lambda m: "(?P<" + m.group(2) + ">" + self.predefined_patterns[m.group(1)].regex_str + ")",
+                py_regex_pattern)
 
-    if len(custom_pats) > 0:
-        all_patterns = copy.deepcopy(predefined_patterns)
-        all_patterns.update(custom_pats)
-    else:
-        all_patterns = predefined_patterns
+            #replace %{pattern_name} with regex
+            py_regex_pattern = re.sub(r'%{(\w+)}',
+                lambda m: "(" + self.predefined_patterns[m.group(1)].regex_str + ")",
+                py_regex_pattern)
 
-    type_mapper = {}
-    #attention: this may cause performance problems
-    py_regex_pattern = pattern
-    while True:
-        # Finding all types specified in the groks
-        m = re.findall(r'%{(\w+):(\w+):(\w+)}', py_regex_pattern)
-        for n in m:
-            type_mapper[n[1]] = n[2]
-        #replace %{pattern_name:custom_name} (or %{pattern_name:custom_name:type} with regex and regex group name
-        py_regex_pattern = re.sub(r'%{(\w+):(\w+)(?::\w+)?}',
-            lambda m: "(?P<" + m.group(2) + ">" + all_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
-        #replace %{pattern_name} with regex
-        py_regex_pattern = re.sub(r'%{(\w+)}',
-            lambda m: "(" + all_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
+            if re.search('%{\w+(:\w+)?}', py_regex_pattern) is None:
+                break
 
-        if re.search('%{\w+(:\w+)?}', py_regex_pattern) is None:
-            break
+        print py_regex_pattern
+        self.regex_obj = re.compile(py_regex_pattern)
 
-    match_obj = re.search(py_regex_pattern, text)
-    if match_obj == None:
-        return None
-    matches = match_obj.groupdict()
-    for key,match in matches.items():
-        try:
-            if type_mapper[key] == 'int':
-                matches[key] = int(match)
-            if type_mapper[key] == 'float':
-                matches[key] = float(match)
-        except (TypeError, KeyError) as e:
-            pass
-    return matches
+    def match(self, text):
+        """If text is matched with pattern, return variable names specified(%{pattern:variable name})
+        in pattern and their corresponding values.If not matched, return None.
+        custom patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)
+        or custom_patterns_dir.
+        """
+
+        match_obj = self.regex_obj.search(text)
+
+        if match_obj == None:
+            return None
+        matches = match_obj.groupdict()
+        for key,match in matches.items():
+            try:
+                if self.type_mapper[key] == 'int':
+                    matches[key] = int(match)
+                if self.type_mapper[key] == 'float':
+                    matches[key] = float(match)
+            except (TypeError, KeyError) as e:
+                pass
+        return matches
+
 
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'
@@ -117,4 +115,3 @@ class Pattern(object):
 
     def __str__(self):
         return '<Pattern:%s,  %s,  %s>' % (self.pattern_name, self.regex_str, self.sub_patterns)
-
