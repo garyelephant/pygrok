@@ -71,6 +71,51 @@ class Grok(object):
         return matches
 
 
+def compile_pattern(pattern, custom_patterns = {}, custom_patterns_dir = None):
+    """Compile pattern before use, for better performance when matching text to patterns.
+    Returns a regex string that can be passed as a pattern to grok_search() for matching.
+    Custom patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair) 
+    or custom_patterns_dir, and will then be used in addition to the built-in ones.
+    """
+    if loaded_pre_patterns is False:
+       global predefined_patterns
+       predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
+       global loaded_pre_patterns
+       loaded_pre_patterns = True
+
+    all_patterns = copy.deepcopy(predefined_patterns)
+
+    custom_pats = {}
+    if custom_patterns_dir is not None:
+        custom_pats = _reload_patterns([custom_patterns_dir])
+
+    for pat_name, regex_str in custom_patterns.items():
+        custom_pats[pat_name] = Pattern(pat_name, regex_str)
+
+    if len(custom_pats) > 0:
+        all_patterns.update(custom_pats)
+
+    #attention: this may cause performance problems
+    py_regex_pattern = pattern
+    while True:
+        #replace %{pattern_name:custom_name} with regex and regex group name
+        py_regex_pattern = re.sub(r'%{(\w+):(\w+)}',
+            lambda m: "(?P<" + m.group(2) + ">" + all_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
+        #replace %{pattern_name} with regex
+        py_regex_pattern = re.sub(r'%{(\w+)}',
+            lambda m: "(" + all_patterns[m.group(1)].regex_str + ")", py_regex_pattern)
+
+        if re.search('%{\w+}', py_regex_pattern) is None:
+            break
+
+    return py_regex_pattern
+
+def grok_search(text, pattern):
+    """Search for pattern in text. Return dictionary with named fields in pattern as keys, or None if no match found.
+    """
+    match_obj = re.search(pattern, text)
+    return match_obj.groupdict() if match_obj is not None else None
+
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'
 
