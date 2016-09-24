@@ -1,7 +1,3 @@
-.. contents::
-   :depth: 3
-..
-
 pygrok |Build Status|
 =====================
 
@@ -38,13 +34,34 @@ Getting Started
 
 .. code:: Python
 
-    >>> import pygrok
-    >>> text = 'gary is male, 25 years old and weighs 68.5 kilograms'
-    >>> pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age} years old and weighs %{NUMBER:weight} kilograms'
-    >>> print pygrok.grok_match(text, pattern)
-    {'gender': 'male', 'age': '25', 'name': 'gary', 'weight': '68.5'}
+    from pygrok import Grok
+    text = 'gary is male, 25 years old and weighs 68.5 kilograms'
+    pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age} years old and weighs %{NUMBER:weight} kilograms'
+    grok = Grok(pattern)
+    print grok.match(text)
 
-Pretty Cool ! Some of the pattern you can use are listed here:
+    # {'gender': 'male', 'age': '25', 'name': 'gary', 'weight': '68.5'}
+
+Pretty Cool !
+
+Numbers can be converted from string to ``int`` or ``float`` if you use
+``%{pattern:name:type}`` syntax, such as ``%{NUMBER:age:int}``
+
+.. code:: Python
+
+    from pygrok import Grok
+    text = 'gary is male, 25 years old and weighs 68.5 kilograms'
+    pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age:int} years old and weighs %{NUMBER:weight:float} kilograms'
+    grok = Grok(pattern)
+    print grok.match(text, pattern)
+
+    # {'gender': 'male', 'age': 25, 'name': 'gary', 'weight': 68.5}
+
+Now ``age`` is of type ``int`` and ``weight`` is of type ``float``.
+
+Awesome !
+
+Some of the pattern you can use are listed here:
 
 ::
 
@@ -55,6 +72,9 @@ Pretty Cool ! Some of the pattern you can use are listed here:
     other patterns such as `IP`, `HOSTNAME`, `URIPATH`, `DATE`, `TIMESTAMP_ISO8601`, `COMMONAPACHELOG`..
 
 See All patterns `here <./pygrok/patterns>`__
+
+You can also have custom pattern, see `these
+codes <https://github.com/garyelephant/pygrok/blob/master/tests/test_pygrok.py#L97>`__.
 
 More details
 ------------

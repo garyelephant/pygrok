@@ -29,20 +29,26 @@ or download, uncompress and install pygrok from [here](https://github.com/garyel
 Getting Started
 ---------------
 ```Python
->>> import pygrok
->>> text = 'gary is male, 25 years old and weighs 68.5 kilograms'
->>> pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age} years old and weighs %{NUMBER:weight} kilograms'
->>> print pygrok.grok_match(text, pattern)
-{'gender': 'male', 'age': '25', 'name': 'gary', 'weight': '68.5'}
+from pygrok import Grok
+text = 'gary is male, 25 years old and weighs 68.5 kilograms'
+pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age} years old and weighs %{NUMBER:weight} kilograms'
+grok = Grok(pattern)
+print grok.match(text)
+
+# {'gender': 'male', 'age': '25', 'name': 'gary', 'weight': '68.5'}
 ```
 
 Pretty Cool !
 
 Numbers can be converted from string to `int` or `float` if you use `%{pattern:name:type}` syntax, such as `%{NUMBER:age:int}`
 ```Python
->>> pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age:int} years old and weighs %{NUMBER:weight:float} kilograms'
->>> print pygrok.grok_match(text, pattern)
-{'gender': 'male', 'age': 25, 'name': 'gary', 'weight': 68.5}
+from pygrok import Grok
+text = 'gary is male, 25 years old and weighs 68.5 kilograms'
+pattern = '%{WORD:name} is %{WORD:gender}, %{NUMBER:age:int} years old and weighs %{NUMBER:weight:float} kilograms'
+grok = Grok(pattern)
+print grok.match(text, pattern)
+
+# {'gender': 'male', 'age': 25, 'name': 'gary', 'weight': 68.5}
 ```
 Now `age` is of type `int` and `weight` is of type `float`.
 
