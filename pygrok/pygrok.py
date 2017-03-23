@@ -90,7 +90,10 @@ def _load_patterns_from_file(file):
     """
     """
     patterns = {}
-    with open(file, 'r') as f:
+    file_encoding = 'ascii'
+    if file == 'grok-patterns':
+        file_encoding = 'utf-8'
+    with open(file, 'r', encoding=file_encoding) as f:
         for l in f:
             l = l.strip()
             if l == '' or l.startswith('#'):
