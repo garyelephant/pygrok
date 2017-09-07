@@ -17,6 +17,7 @@ setup(name = 'pygrok',
     license = 'MIT',
     packages = ['pygrok'],
     include_package_data = True,
+    zip_safe = True,
     keywords = ['python grok', 'regex'], # arbitrary keywords
     download_url = 'https://github.com/garyelephant/pygrok/tarball/v1.0.0',
     install_requires=['regex']
