@@ -24,30 +24,9 @@ class Grok(object):
 
         if len(custom_pats) > 0:
             self.predefined_patterns.update(custom_pats)
+        
+        self._load_search_pattern()
 
-        self.type_mapper = {}
-        py_regex_pattern = pattern
-        while True:
-            # Finding all types specified in the groks
-            m = re.findall(r'%{(\w+):(\w+):(\w+)}', py_regex_pattern)
-            for n in m:
-                self.type_mapper[n[1]] = n[2]
-            #replace %{pattern_name:custom_name} (or %{pattern_name:custom_name:type}
-            # with regex and regex group name
-
-            py_regex_pattern = re.sub(r'%{(\w+):(\w+)(?::\w+)?}',
-                lambda m: "(?P<" + m.group(2) + ">" + self.predefined_patterns[m.group(1)].regex_str + ")",
-                py_regex_pattern)
-
-            #replace %{pattern_name} with regex
-            py_regex_pattern = re.sub(r'%{(\w+)}',
-                lambda m: "(" + self.predefined_patterns[m.group(1)].regex_str + ")",
-                py_regex_pattern)
-
-            if re.search('%{\w+(:\w+)?}', py_regex_pattern) is None:
-                break
-
-        self.regex_obj = re.compile(py_regex_pattern)
 
     def match(self, text):
         """If text is matched with pattern, return variable names specified(%{pattern:variable name})
@@ -71,6 +50,36 @@ class Grok(object):
                 pass
         return matches
 
+    def set_search_pattern(self, pattern=None):
+        if type(pattern) is not str :
+            raise ValueError("Please supply a valid pattern")    
+        self.pattern = pattern
+        self._load_search_pattern()
+
+    def _load_search_pattern(self):
+        self.type_mapper = {}
+        py_regex_pattern = self.pattern
+        while True:
+            # Finding all types specified in the groks
+            m = re.findall(r'%{(\w+):(\w+):(\w+)}', py_regex_pattern)
+            for n in m:
+                self.type_mapper[n[1]] = n[2]
+            #replace %{pattern_name:custom_name} (or %{pattern_name:custom_name:type}
+            # with regex and regex group name
+
+            py_regex_pattern = re.sub(r'%{(\w+):(\w+)(?::\w+)?}',
+                lambda m: "(?P<" + m.group(2) + ">" + self.predefined_patterns[m.group(1)].regex_str + ")",
+                py_regex_pattern)
+
+            #replace %{pattern_name} with regex
+            py_regex_pattern = re.sub(r'%{(\w+)}',
+                lambda m: "(" + self.predefined_patterns[m.group(1)].regex_str + ")",
+                py_regex_pattern)
+
+            if re.search('%{\w+(:\w+)?}', py_regex_pattern) is None:
+                break
+
+        self.regex_obj = re.compile(py_regex_pattern)
 
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'

@@ -57,7 +57,6 @@ def test_one_pat():
     m = grok.match(text)
     assert m == {'birthyear': 1989}, 'grok match failed:%s, %s' % (text, pat, )
 
-
 def test_multiple_pats():
     text = 'gary 25 "never quit"'
     pat = '%{WORD:name} %{INT:age} %{QUOTEDSTRING:motto}'
@@ -130,9 +129,24 @@ def test_custom_pat_files():
     assert m['user_id'] == 'Beijing-1104' and m['name'] == 'gary' and m['age'] == '25' \
         and m['motto'] == '"never quit"', 'grok match failed:%s, %s' % (text, pat, )
 
+
+def test_hotloading_pats():
+    text = 'github'
+    pat = '%{WORD:test_word}'
+    grok = Grok(pat)
+    m = grok.match(text)
+    assert m['test_word'] == 'github', 'grok match failed:%s, %s' % (text, pat, )
+    #matches
+    
+    text = '1989'
+    pat = '%{NUMBER:birthyear:int}'
+    grok.set_search_pattern(pat)
+    m = grok.match(text)
+    assert m == {'birthyear': 1989}, 'grok match failed:%s, %s' % (text, pat, )
+
 if __name__ == '__main__':
     test_one_pat()
     test_multiple_pats()
     test_custom_pats()
     test_custom_pat_files()
-
+    test_hotloading_pats()
