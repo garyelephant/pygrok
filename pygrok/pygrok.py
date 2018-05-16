@@ -10,10 +10,11 @@ DEFAULT_PATTERNS_DIRS = [pkg_resources.resource_filename(__name__, 'patterns')]
 
 
 class Grok(object):
-    def __init__(self, pattern, custom_patterns_dir=None, custom_patterns={}):
+    def __init__(self, pattern, custom_patterns_dir=None, custom_patterns={}, fullmatch=True):
         self.pattern = pattern
         self.custom_patterns_dir = custom_patterns_dir
         self.predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
+        self.fullmatch = fullmatch
 
         custom_pats = {}
         if custom_patterns_dir is not None:
@@ -35,7 +36,11 @@ class Grok(object):
         or custom_patterns_dir.
         """
 
-        match_obj = self.regex_obj.search(text)
+        match_obj = None
+        if self.fullmatch:
+            match_obj = self.regex_obj.fullmatch(text)
+        else:
+            match_obj = self.regex_obj.search(text)
 
         if match_obj == None:
             return None

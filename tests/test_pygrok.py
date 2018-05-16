@@ -1,12 +1,13 @@
 from pygrok import Grok
 
+
 def test_one_pat():
     text = '1024'
     pat = '%{INT:test_int}'
     grok = Grok(pat)
     m = grok.match(text)
     assert m['test_int'] == '1024', 'grok match failed:%s, %s' % (text, pat, )
-    
+
     text = '1024'
     pat = '%{NUMBER:test_num}'
     grok = Grok(pat)
@@ -42,7 +43,7 @@ def test_one_pat():
     grok = Grok(pat)
     m = grok.match(text)
     assert m == {}, 'grok match failed:%s, %s' % (text, pat, )
-    #you get nothing because variable name is not set, compare "%{WORD}" and "%{WORD:variable_name}"
+    # you get nothing because variable name is not set, compare "%{WORD}" and "%{WORD:variable_name}"
 
     text = 'github'
     pat = '%{NUMBER:test_num}'
@@ -50,12 +51,13 @@ def test_one_pat():
     m = grok.match(text)
     assert m is None, 'grok match failed:%s, %s' % (text, pat, )
     #not match
-    
+
     text = '1989'
     pat = '%{NUMBER:birthyear:int}'
     grok = Grok(pat)
     m = grok.match(text)
     assert m == {'birthyear': 1989}, 'grok match failed:%s, %s' % (text, pat, )
+
 
 def test_multiple_pats():
     text = 'gary 25 "never quit"'
@@ -65,7 +67,7 @@ def test_multiple_pats():
     assert m['name'] == 'gary' and m['age'] == '25' and m['motto'] == '"never quit"', \
         'grok match failed:%s, %s' % (text, pat, )
 
-    #variable names are not set
+    # variable names are not set
     text = 'gary 25 "never quit"'
     pat = '%{WORD} %{INT} %{QUOTEDSTRING}'
     grok = Grok(pat)
@@ -79,7 +81,7 @@ def test_multiple_pats():
     m = grok.match(text)
     assert m is None, 'grok match failed:%s, %s' % (text, pat, )
 
-    #nginx log
+    # nginx log
     text = 'edge.v.iask.com.edge.sinastorage.com 14.18.243.65 6.032s - [21/Jul/2014:16:00:02 +0800]' \
         + ' "GET /edge.v.iask.com/125880034.hlv HTTP/1.0" 200 70528990 "-"' \
         + ' "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)' \
@@ -108,11 +110,12 @@ def test_multiple_pats():
     m = grok.match(text)
     assert m == {'load_1': 1.88, 'load_2': 1.73, 'load_3': 1.49}, 'grok match failed:%s, %s' % (text, pat, )
 
+
 def test_custom_pats():
-    custom_pats = {'ID' : '%{WORD}-%{INT}'}
+    custom_pats = {'ID': '%{WORD}-%{INT}'}
     text = 'Beijing-1104,gary 25 "never quit"'
     pat = '%{ID:user_id},%{WORD:name} %{INT:age} %{QUOTEDSTRING:motto}'
-    grok = Grok(pat, custom_patterns = custom_pats)
+    grok = Grok(pat, custom_patterns=custom_pats)
     m = grok.match(text)
     assert m['user_id'] == 'Beijing-1104' and m['name'] == 'gary' and m['age'] == '25' \
         and m['motto'] == '"never quit"', 'grok match failed:%s, %s' % (text, pat, )
@@ -122,9 +125,9 @@ def test_custom_pat_files():
     import os.path
     pats_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_patterns')
     text = 'Beijing-1104,gary 25 "never quit"'
-    #pattern "ID" is defined in ./test_patterns/pats
+    # pattern "ID" is defined in ./test_patterns/pats
     pat = '%{ID:user_id},%{WORD:name} %{INT:age} %{QUOTEDSTRING:motto}'
-    grok = Grok(pat, custom_patterns_dir = pats_dir)
+    grok = Grok(pat, custom_patterns_dir=pats_dir)
     m = grok.match(text)
     assert m['user_id'] == 'Beijing-1104' and m['name'] == 'gary' and m['age'] == '25' \
         and m['motto'] == '"never quit"', 'grok match failed:%s, %s' % (text, pat, )
@@ -136,13 +139,14 @@ def test_hotloading_pats():
     grok = Grok(pat)
     m = grok.match(text)
     assert m['test_word'] == 'github', 'grok match failed:%s, %s' % (text, pat, )
-    #matches
-    
+    # matches
+
     text = '1989'
     pat = '%{NUMBER:birthyear:int}'
     grok.set_search_pattern(pat)
     m = grok.match(text)
     assert m == {'birthyear': 1989}, 'grok match failed:%s, %s' % (text, pat, )
+
 
 if __name__ == '__main__':
     test_one_pat()
