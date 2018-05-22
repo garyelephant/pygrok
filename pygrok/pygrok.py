@@ -10,10 +10,11 @@ DEFAULT_PATTERNS_DIRS = [pkg_resources.resource_filename(__name__, 'patterns')]
 
 
 class Grok(object):
-    def __init__(self, pattern, custom_patterns_dir=None, custom_patterns={}):
+    def __init__(self, pattern, custom_patterns_dir=None, custom_patterns={}, fullmatch=True):
         self.pattern = pattern
         self.custom_patterns_dir = custom_patterns_dir
         self.predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
+        self.fullmatch = fullmatch
 
         custom_pats = {}
         if custom_patterns_dir is not None:
@@ -24,9 +25,45 @@ class Grok(object):
 
         if len(custom_pats) > 0:
             self.predefined_patterns.update(custom_pats)
+        
+        self._load_search_pattern()
 
+
+    def match(self, text):
+        """If text is matched with pattern, return variable names specified(%{pattern:variable name})
+        in pattern and their corresponding values.If not matched, return None.
+        custom patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)
+        or custom_patterns_dir.
+        """
+
+        match_obj = None
+        if self.fullmatch:
+            match_obj = self.regex_obj.fullmatch(text)
+        else:
+            match_obj = self.regex_obj.search(text)
+
+        if match_obj == None:
+            return None
+        matches = match_obj.groupdict()
+        for key,match in matches.items():
+            try:
+                if self.type_mapper[key] == 'int':
+                    matches[key] = int(match)
+                if self.type_mapper[key] == 'float':
+                    matches[key] = float(match)
+            except (TypeError, KeyError) as e:
+                pass
+        return matches
+
+    def set_search_pattern(self, pattern=None):
+        if type(pattern) is not str :
+            raise ValueError("Please supply a valid pattern")    
+        self.pattern = pattern
+        self._load_search_pattern()
+
+    def _load_search_pattern(self):
         self.type_mapper = {}
-        py_regex_pattern = pattern
+        py_regex_pattern = self.pattern
         while True:
             # Finding all types specified in the groks
             m = re.findall(r'%{(\w+):(\w+):(\w+)}', py_regex_pattern)
@@ -48,29 +85,6 @@ class Grok(object):
                 break
 
         self.regex_obj = re.compile(py_regex_pattern)
-
-    def match(self, text):
-        """If text is matched with pattern, return variable names specified(%{pattern:variable name})
-        in pattern and their corresponding values.If not matched, return None.
-        custom patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)
-        or custom_patterns_dir.
-        """
-
-        match_obj = self.regex_obj.search(text)
-
-        if match_obj == None:
-            return None
-        matches = match_obj.groupdict()
-        for key,match in matches.items():
-            try:
-                if self.type_mapper[key] == 'int':
-                    matches[key] = int(match)
-                if self.type_mapper[key] == 'float':
-                    matches[key] = float(match)
-            except (TypeError, KeyError) as e:
-                pass
-        return matches
-
 
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'
