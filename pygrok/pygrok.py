@@ -3,6 +3,7 @@ try:
 except ImportError as e:
     # If you import re, grok_match can't handle regular expression containing atomic group(?>)
     import re
+import codecs
 import os
 import pkg_resources
 
@@ -105,7 +106,7 @@ def _load_patterns_from_file(file):
     """
     """
     patterns = {}
-    with open(file, 'r') as f:
+    with codecs.open(file, 'r', encoding='utf-8') as f:
         for l in f:
             l = l.strip()
             if l == '' or l.startswith('#'):
