@@ -1,4 +1,9 @@
 from pygrok import Grok
+try:
+   import regex as re
+except ImportError as e:
+   # If you import re, grok_match can't handle regular expression containing atomic group(?>)
+   import re
 
 
 def test_one_pat():
@@ -57,6 +62,12 @@ def test_one_pat():
     grok = Grok(pat)
     m = grok.match(text)
     assert m == {'birthyear': 1989}, 'grok match failed:%s, %s' % (text, pat, )
+
+    text = 'some multiline\ntext'
+    pat = '%{GREEDYDATA:txt}'
+    grok = Grok(pat, flags=re.M | re.S)
+    m = grok.match(text)
+    assert m == {'txt': 'some multiline\ntext'}, 'grok match failed:%s, %s' % (text, pat, )
 
 
 def test_multiple_pats():

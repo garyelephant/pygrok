@@ -62,6 +62,9 @@ Some of the pattern you can use are listed here:
 
 other patterns such as `IP`, `HOSTNAME`, `URIPATH`, `DATE`, `TIMESTAMP_ISO8601`, `COMMONAPACHELOG`..
 ```
+
+You can also pass re flags to Grok (e.g. `Grok('%{GREEDYDATA:txt}', flags=re.M|re.S)`).
+
 See All patterns [here](./pygrok/patterns)
 
 You can also have custom pattern, see [these codes](https://github.com/garyelephant/pygrok/blob/master/tests/test_pygrok.py#L97).
@@ -82,14 +85,14 @@ pattern files come from [logstash filter grok's pattern files](https://github.co
 
 Contribute
 ---
-*   You are encouraged to [fork](https://github.com/garyelephant/pygrok/fork), improve the code, then make a pull request. 
+*   You are encouraged to [fork](https://github.com/garyelephant/pygrok/fork), improve the code, then make a pull request.
 *   [Issue tracker](https://github.com/garyelephant/pygrok/issues)
 
 Get Help
 ---
     mail:garygaowork@gmail.com
     twitter:@garyelephant
-    
+
 Contributors
 ---
   Thanks to [all contributors](https://github.com/garyelephant/pygrok/graphs/contributors)
