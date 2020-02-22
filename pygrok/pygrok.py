@@ -11,11 +11,12 @@ DEFAULT_PATTERNS_DIRS = [pkg_resources.resource_filename(__name__, 'patterns')]
 
 
 class Grok(object):
-    def __init__(self, pattern, custom_patterns_dir=None, custom_patterns={}, fullmatch=True):
+    def __init__(self, pattern, custom_patterns_dir=None, custom_patterns={}, fullmatch=True, flags=0):
         self.pattern = pattern
         self.custom_patterns_dir = custom_patterns_dir
         self.predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
         self.fullmatch = fullmatch
+        self.flags = flags
 
         custom_pats = {}
         if custom_patterns_dir is not None:
@@ -85,7 +86,7 @@ class Grok(object):
             if re.search('%{\w+(:\w+)?}', py_regex_pattern) is None:
                 break
 
-        self.regex_obj = re.compile(py_regex_pattern)
+        self.regex_obj = re.compile(py_regex_pattern, flags=self.flags)
 
 def _wrap_pattern_name(pat_name):
     return '%{' + pat_name + '}'
