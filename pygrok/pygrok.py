@@ -14,8 +14,16 @@ class Grok(object):
     def __init__(self, pattern, custom_patterns_dir=None, custom_patterns={}, fullmatch=True):
         self.pattern = pattern
         self.custom_patterns_dir = custom_patterns_dir
-        self.predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
+        
+        #Adding PySpark support in case using library as zip file during spark-submit command.
+        try:
+            self.predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
+        except NotADirectoryError:
+            DEFAULT_PATTERNS_DIRS = ['.' + '/patterns']
+        
         self.fullmatch = fullmatch
+
+
 
         custom_pats = {}
         if custom_patterns_dir is not None:
