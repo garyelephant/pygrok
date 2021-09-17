@@ -12,12 +12,19 @@ DEFAULT_PATTERNS_DIRS = [pkg_resources.resource_filename(__name__, "patterns")]
 
 class Grok(object):
     def __init__(
-        self, pattern, custom_patterns_dir=None, custom_patterns={}, fullmatch=True
+        self,
+        pattern,
+        custom_patterns_dir=None,
+        custom_patterns=None,
+        fullmatch=True,
+        match_unnamed_groks=False,
     ):
         self.pattern = pattern
         self.custom_patterns_dir = custom_patterns_dir
         self.predefined_patterns = _reload_patterns(DEFAULT_PATTERNS_DIRS)
         self.fullmatch = fullmatch
+        custom_patterns = custom_patterns or {}
+        self.match_unnamed_groks = match_unnamed_groks
 
         custom_pats = {}
         if custom_patterns_dir is not None:
@@ -37,8 +44,6 @@ class Grok(object):
         custom patterns can be passed in by custom_patterns(pattern name, pattern regular expression pair)
         or custom_patterns_dir.
         """
-
-        match_obj = None
         if self.fullmatch:
             match_obj = self.regex_obj.fullmatch(text)
         else:
@@ -85,9 +90,21 @@ class Grok(object):
             )
 
             # replace %{pattern_name} with regex
+            if self.match_unnamed_groks:
+                sub_method = (
+                    lambda m: "(?P<"
+                    + m.group(1)
+                    + ">"
+                    + self.predefined_patterns[m.group(1)].regex_str
+                    + ")"
+                )
+            else:
+                sub_method = (
+                    lambda m: "(" + self.predefined_patterns[m.group(1)].regex_str + ")"
+                )
             py_regex_pattern = re.sub(
                 r"%{(\w+)}",
-                lambda m: "(" + self.predefined_patterns[m.group(1)].regex_str + ")",
+                sub_method,
                 py_regex_pattern,
             )
 
@@ -132,10 +149,10 @@ def _load_patterns_from_file(file):
 class Pattern(object):
     """ """
 
-    def __init__(self, pattern_name, regex_str, sub_patterns={}):
+    def __init__(self, pattern_name, regex_str, sub_patterns=None):
         self.pattern_name = pattern_name
         self.regex_str = regex_str
-        self.sub_patterns = sub_patterns  # sub_pattern name list
+        self.sub_patterns = sub_patterns or {}  # sub_pattern name list
 
     def __str__(self):
         return "<Pattern:%s,  %s,  %s>" % (

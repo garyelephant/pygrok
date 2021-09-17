@@ -235,6 +235,15 @@ def test_hotloading_pats():
     )
 
 
+def test_match_unnamed():
+    url = "https://foo:bar@test.com/path?query=1"
+    grok = Grok("%{URI}", match_unnamed_groks=True)
+    m = grok.match(url)
+    assert m["USER"] == "foo"
+    assert m["URI"] == url
+    assert m["HOSTNAME"] == "test.com"
+
+
 if __name__ == "__main__":
     test_one_pat()
     test_multiple_pats()
