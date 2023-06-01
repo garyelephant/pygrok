@@ -8,7 +8,7 @@ if os.path.exists("README.rst"):
 
 setup(
     name="pygrok",
-    version="1.0.2",
+    version="1.0.3",
     description="A Python library to parse strings and"
     + " extract information from structured/unstructured data",
     long_description=long_desc,
@@ -19,7 +19,7 @@ setup(
     packages=["pygrok"],
     include_package_data=True,
     zip_safe=True,
-    keywords=["python grok", "regex"],  # arbitrary keywords
+    keywords=["python grok", "pyre2"],  # arbitrary keywords
     download_url="https://github.com/garyelephant/pygrok/tarball/v1.0.0",
-    install_requires=["regex"],
+    install_requires=["pyre2"],
 )
