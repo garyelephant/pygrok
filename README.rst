@@ -79,10 +79,6 @@ codes <https://github.com/garyelephant/pygrok/blob/master/tests/test_pygrok.py#L
 More details
 ------------
 
-Beause python re module does not support regular expression syntax
-atomic grouping(?>),so pygrok requires
-`regex <https://pypi.python.org/pypi/regex/2014.06.28>`__ to be
-installed.
 
 pygrok is inspired by `Grok <https://github.com/jordansissel/grok>`__
 developed by Jordan Sissel. This is not a wrapper of Jordan Sissel's
