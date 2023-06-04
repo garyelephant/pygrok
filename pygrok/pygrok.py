@@ -3,6 +3,9 @@ try:
 except ImportError as e:
     # If you import re, grok_match can't handle regular expression containing atomic group(?>)
     import re
+else : 
+    re.set_fallback_notification(re.FALLBACK_EXCEPTION)
+
 import codecs
 import os
 import pkg_resources
